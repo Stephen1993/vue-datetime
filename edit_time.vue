@@ -165,11 +165,10 @@ export default {
 
   methods: {
     changeMonth(type, index) {
-      console.log(type, index)
       let date = JSON.parse(JSON.stringify(vm.datelist[index]))
       let year = parseInt(date.year)
       let month = parseInt(date.month) + parseInt(type)
-      if(month < 0) {
+      if(month < 1) {
         year -= 1
         month = 12
       }else if(month > 12) {
@@ -182,6 +181,7 @@ export default {
       if(vm.options.enable) {
         vm.options.disable = vm.getDisableDate(year, month, vm.options.enable)
       }
+      vm.options.selectDay = [...pageParams.selectDay]
       vm.datelist.$set(index, date)
     },
 

@@ -12,6 +12,11 @@ v1.0 功能:
 8.同时初始化不可点击和可点击日期，将以可点击日期为准  
 ```
 
+```
+v1.1:  
+1.修复已知bug  
+```
+
 用法：`<edit-time :datelist='datelist' :options='options'></edit-time>`
 
     datelist = [
