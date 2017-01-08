@@ -17,6 +17,14 @@ v1.1:
 1.修复已知bug  
 ```
 
+```
+v1.2:  
+1.重构代码，使代码更优雅和简洁  
+2.性能优化
+3.完善功能，使多时间框和原地切换时间共存
+4.支持不传入options 和datelist的使，默认显示当前日期并且可原地切换日期
+```
+
 用法：`<edit-time :datelist='datelist' :options='options'></edit-time>`
 
     datelist = [
@@ -30,7 +38,7 @@ v1.1:
     options = {
     disable: [], // 不可选日期，格式: '2016-01-01'
     // enable: [], // 可选日期，格式: '2016-01-01'，enable和disable只能有一个，如果都有默认用enable
-    selectDay: [], // 已选择的day，格式: '2016-01-01'
+    selected: [], // 已选择的day，格式: '2016-01-01'
     callback: undefined // 点击日期回调函数, callback(selectDateList)
     }
 
