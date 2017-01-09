@@ -105,6 +105,7 @@
         <li class='li-item' v-for='i in item.week'></li>
         <li
           v-for='i in item.monthDay'
+          id='{{item.id + "-" + (i + 1)}}'
           class='{{"li-item day" + (item.disable.has(i + 1) ? " disable" : "")}}'
           :style = '{
             background: (selected.has(formatDate(item.year, item.month, i + 1)) ? "#5bc0de" : ""),
@@ -216,8 +217,9 @@ export default {
 
       let tempList = JSON.parse(JSON.stringify(datelist))
       tempList.forEach((item, index) => {
-        item.id = index
-        this.getDayConfig(item)
+        item.id = index // 对整个时间框的初始化配置, 时间框id
+        item.lastSelect = null // 对整个时间框的初始化配置, 时间框最近一次选择的时间
+        this.getDayConfig(item) // 对每一次显示的时间的初始化配置
       })
       this.selected = new Set(options.selected)
       this.dateList = tempList
@@ -290,14 +292,20 @@ export default {
       }
 
       this.isdbclick = false
-      let tMonth = (item.month + '').length === 2 ? item.month : '0' + item.month
-      let tDay = (day + '').length === 2 ? day : '0' + day
-      let date = item.year + '-' + tMonth + '-' + tDay
+      let date = this.formatDate(item.year, item.month, day)
       if(event.target.getAttribute('select') !== 'true') {
+        if(item.multiSelect === false && item.lastSelect) {
+          this.selected.delete(this.formatDate(item.year, item.month, item.lastSelect))
+          let lastDom = document.getElementById(item.id + '-' + item.lastSelect)
+          lastDom.style.background = ''
+          lastDom.style.color = '#000'
+          lastDom.setAttribute('select', 'false')
+        }
         event.target.style.background = '#5bc0de'
         event.target.style.color = '#fff'
         event.target.setAttribute('select', 'true')
         this.selected.add(date)
+        item.lastSelect = day
       }else {
         event.target.style.background = ''
         event.target.style.color = '#000'
@@ -310,6 +318,7 @@ export default {
     },
 
     dbDateClick(event, item, day) {
+      if(item.multiSelect === false) return
       if(item.disable.has(day)) return
 
       event.target.style.background = '#5bc0de'
@@ -355,8 +364,11 @@ export default {
       this.init(this.options, val)
     },
 
-    options: function(val, oldVal) { // 此对象可进行深度watch，则改变options某个属性即可触发更新，但不建议这样做
-      this.init(val, this.datelist)
+    options: {
+      handler: function(val, oldVal) {
+        this.init(val, this.datelist)
+      },
+      deep: true
     }
   },
 
