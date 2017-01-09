@@ -48,5 +48,5 @@ v1.3:
     }
 
 图示:
-[看不到图请点击这](http://blog.csdn.net/xingyeyongheng/article/details/54289241)
+[github图示有问题，请点击这查看](http://blog.csdn.net/xingyeyongheng/article/details/54289241)  
 ![图示](http://github-image.oss-cn-hangzhou.aliyuncs.com/tmpdir--17_1_9_21_55_32.gif)
