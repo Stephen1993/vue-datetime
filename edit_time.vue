@@ -355,7 +355,7 @@ export default {
       this.init(this.options, val)
     },
 
-    options: function(val, oldVal) {
+    options: function(val, oldVal) { // 此对象可进行深度watch，则改变options某个属性即可触发更新，但不建议这样做
       this.init(val, this.datelist)
     }
   },
