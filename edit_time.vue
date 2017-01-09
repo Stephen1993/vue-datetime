@@ -19,6 +19,40 @@
       display: inline-block;
       font-size: 20px;
       color: #7b7777;
+      span {
+        display: inline-block;
+        cursor: pointer;
+        &:hover {
+          color: #2494f2;
+        }
+      }
+    }
+    .year-list-box {
+      display: inline-block;
+      position: relative;
+      .year-list, .month-list {
+        position: absolute;
+        background: #fff;
+        width: 65px;
+        height: 200px;
+        overflow-y: auto;
+        border: 1px solid #ddd;
+        left: 0;
+        text-align: center;
+        .year-item, .month-item {
+          cursor: pointer;
+          color: #333;
+          font-size: 14px;
+          padding: 3px 0px;
+          &:hover {
+            background: #e6e6e6;
+          }
+        }
+      }
+      .month-list {
+        left: initial;
+        right: 0;
+      }
     }
     .pre-month, .next-month {
       display: inline-block;
@@ -88,9 +122,18 @@
   <div class='edit-time-components'>
     <div id='{{index}}' class='time-box' v-for='(index, item) in dateList'>
       <div class='year-month-box'>
-        <p v-if='item.switch' class='pre-month' @click='changeMonth(-1, index)'>&lt;</p>
-        <p class='year-month'>{{item.year + '年' + item.month + '月'}}</p>
-        <p v-if='item.switch' class='next-month' @click='changeMonth(1, index)'>&gt;</p>
+        <p v-if='item.switch' class='pre-month' @click='changeYearMonth(item.year, item.month - 1, index)'>&lt;</p>
+        <div v-if='item.switch' class='year-list-box'>
+          <div class='year-month'><span @click='yearMonthList($event, index, 0)'>{{item.year}}年</span><span @click='yearMonthList($event, index, 1)'>{{item.month}}月</span></div>
+          <ul v-if='showYearList === index' class='year-list'>
+            <li v-for='y in 25' @click='changeYearMonth(2000 + y, item.month, index)' class='year-item'>{{2000 + y}}年</li>
+          </ul>
+          <ul v-if='showMonthList === index' class='month-list'>
+            <li v-for='m in 12' @click='changeYearMonth(item.year, m + 1, index)' class='month-item'>{{m + 1}}月</li>
+          </ul>
+        </div>
+        <p v-if='!item.switch' class='year-month'>{{item.year + '年' + item.month + '月'}}</p>
+        <p v-if='item.switch' class='next-month' @click='changeYearMonth(item.year, item.month + 1, index)'>&gt;</p>
       </div>
       <ul class='ul-box'>
         <li class='li-item week'>周日</li>
@@ -180,15 +223,32 @@ export default {
       isdbclick: false,
       domId: null,
       dbDay: null,
-      dom: new Array(33)
+      dom: new Array(33),
+      showYearList: null,
+      showMonthList: null
     }
   },
 
   methods: {
-    changeMonth(type, index) {
+    hideList() {
+      this.showYearList = null
+      this.showMonthList = null
+    },
+
+    yearMonthList(event, index, type) { // type = 0表示年，1表示月
+      event.stopPropagation();
+      this.hideList()
+      if(type === 0) {
+        this.showYearList = index
+      }else if(type === 1) {
+        this.showMonthList = index
+      }
+    },
+
+    changeYearMonth(year, month, index) {
+      this.isdbclick = false // 切换日期后一定要将双击记录清空
+      this.domId = null
       let date = JSON.parse(JSON.stringify(this.dateList[index]))
-      let year = parseInt(date.year)
-      let month = parseInt(date.month) + parseInt(type)
       if(month < 1) {
         year -= 1
         month = 12
@@ -231,8 +291,8 @@ export default {
       let monthDay = (new Date(year, month, 0)).getDate()
       let week = (new Date(year, parseInt(month - 1), 1)).getDay()
 
-      item.year = year
-      item.month = month
+      item.year = parseInt(year)
+      item.month = parseInt(month)
       item.monthDay = monthDay
       item.week = week
       item.disable = new Set()
@@ -374,6 +434,11 @@ export default {
 
   created: function() {
     this.init(this.options, this.datelist)
+    document.addEventListener('click', this.hideList) // 点击日期之外的隐藏日期选择
+  },
+
+  destroyed: function() {
+    document.removeEventListener('click', this.hideList)
   }
 }
 </script>

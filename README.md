@@ -25,6 +25,11 @@ v1.2:
 4.支持不传入options 和datelist的使，默认显示当前日期并且可原地切换日期
 ```
 
+```
+v1.3:  
+1.增加年份和月份的快速选择
+```
+
 用法：`<edit-time :datelist='datelist' :options='options'></edit-time>`
 
     datelist = [
@@ -43,4 +48,4 @@ v1.2:
     }
 
 图示:
-![图示](http://github-image.oss-cn-hangzhou.aliyuncs.com/tmpdir--17_1_6_21_40_46.gif)
+![图示](http://github-image.oss-cn-hangzhou.aliyuncs.com/tmpdir--17_1_9_21_55_32.gif)
