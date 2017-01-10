@@ -125,10 +125,10 @@
         <p v-if='item.switch' class='pre-month' @click='changeYearMonth(item.year, item.month - 1, index)'>&lt;</p>
         <div v-if='item.switch' class='year-list-box'>
           <div class='year-month'><span @click='yearMonthList($event, index, 0)'>{{item.year}}年</span><span @click='yearMonthList($event, index, 1)'>{{item.month}}月</span></div>
-          <ul v-if='showYearList === index' class='year-list'>
+          <ul v-if='showYearList === index' @mousewheel='mousewheel($event)' class='year-list'>
             <li v-for='y in 25' @click='changeYearMonth(2000 + y, item.month, index)' class='year-item'>{{2000 + y}}年</li>
           </ul>
-          <ul v-if='showMonthList === index' class='month-list'>
+          <ul v-if='showMonthList === index' @mousewheel='mousewheel($event)' class='month-list'>
             <li v-for='m in 12' @click='changeYearMonth(item.year, m + 1, index)' class='month-item'>{{m + 1}}月</li>
           </ul>
         </div>
@@ -230,13 +230,28 @@ export default {
   },
 
   methods: {
+    mousewheel(event) {
+      let pNode = event.currentTarget
+      let scrollTop = pNode.scrollTop
+      let scrollHeight = pNode.scrollHeight
+      let height = pNode.clientHeight
+      let delta = (event.wheelDelta) ? event.wheelDelta : -(event.detail || 0)
+
+      if((delta > 0 && scrollTop <= delta) || (delta < 0 && scrollHeight - height - scrollTop <= -1 * delta)) {
+        // IE浏览器下滚动会跨越边界直接影响父级滚动，因此，临界时候手动边界滚动定位
+        pNode.scrollTop = delta > 0 ? 0 : scrollHeight;
+        // 向上滚 || 向下滚
+        event.preventDefault();
+      }
+    },
+
     hideList() {
       this.showYearList = null
       this.showMonthList = null
     },
 
     yearMonthList(event, index, type) { // type = 0表示年，1表示月
-      event.stopPropagation();
+      event.stopPropagation()
       this.hideList()
       if(type === 0) {
         this.showYearList = index
