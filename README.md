@@ -30,6 +30,11 @@ v1.3:
 1.增加年份和月份的快速选择
 ```
 
+```
+v1.4:  
+1.优化代码
+```
+
 用法：`<edit-time :datelist='datelist' :options='options'></edit-time>`
 
     datelist = [

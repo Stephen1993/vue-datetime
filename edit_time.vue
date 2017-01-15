@@ -149,7 +149,7 @@
         <li
           v-for='i in item.monthDay'
           id='{{item.id + "-" + (i + 1)}}'
-          class='{{"li-item day" + (item.disable.has(i + 1) ? " disable" : "")}}'
+          class='{{"li-item day" + (isDisable(item.year, item.month, i + 1) ? " disable" : "")}}'
           :style = '{
             background: (selected.has(formatDate(item.year, item.month, i + 1)) ? "#5bc0de" : ""),
             color: (selected.has(formatDate(item.year, item.month, i + 1)) ? "#fff" : "")
@@ -277,6 +277,15 @@ export default {
       this.dateList.$set(index, date)
     },
 
+    isDisable(year, month, day) {
+      let date = this.formatDate(year, month, day)
+      if(this.options.enable) {
+        return this.options.enable.indexOf(date) === -1
+      }else {
+        return this.options.disable.indexOf(date) !== -1
+      }
+    },
+
     formatDate(year, month, day) {
       month = (month + '').length === 2 ? month : '0' + month
       day = (day + '').length === 2 ? day : '0' + day
@@ -310,20 +319,6 @@ export default {
       item.month = parseInt(month)
       item.monthDay = monthDay
       item.week = week
-      item.disable = new Set()
-      if(this.options.enable) {
-        for(let i = 1; i < 32; ++i) {
-          if(this.options.enable.indexOf(this.formatDate(year, month, i)) === -1) {
-            item.disable.add(i)
-          }
-        }
-      }else {
-        for(let i = 1; i < 32; ++i) {
-          if(this.options.disable.indexOf(this.formatDate(year, month, i)) !== -1) {
-            item.disable.add(i)
-          }
-        }
-      }
     },
 
     getdbClickData(item) {
@@ -351,7 +346,7 @@ export default {
     },
 
     dateClick(event, item, day) {
-      if(item.disable.has(day)) return
+      if(this.isDisable(item.year, item.month, day)) return
 
       if(this.isdbclick) {
         if(item.id === this.domId) {
@@ -394,7 +389,7 @@ export default {
 
     dbDateClick(event, item, day) {
       if(item.multiSelect === false) return
-      if(item.disable.has(day)) return
+      if(this.isDisable(item.year, item.month, day)) return
 
       event.target.style.background = '#5bc0de'
       event.target.style.color = '#fff'
@@ -420,7 +415,7 @@ export default {
       let left = day > this.dbDay ? this.dbDay : day
       let right = day > this.dbDay ? day : this.dbDay
       for(let i = 1; i <= item.monthDay; ++i) {
-        if(item.disable.has(i)) continue
+        if(this.isDisable(item.year, item.month, i)) continue
 
         let dom = this.dom[i]
         if(left <= i && i <= right) {
@@ -440,7 +435,7 @@ export default {
     },
 
     options: {
-      handler: function(val, oldVal) {
+      handler: function(val, oldVal) { // 此处不建议深度监听，根据业务需求判断是否采用深度监听
         this.init(val, this.datelist)
       },
       deep: true
