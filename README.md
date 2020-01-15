@@ -53,5 +53,47 @@ v1.4:
     }
 
 图示:
-[github图示有问题，请点击这查看](http://blog.csdn.net/xingyeyongheng/article/details/54289241)  
-![图示](http://github-image.oss-cn-hangzhou.aliyuncs.com/tmpdir--17_1_9_21_55_32.gif)
+<img src = "https://github.com/Stephen1993/vue-datetime/blob/master/img/8lnm5-3tu3f.gif" display = "flex" width = "300px" height = "300px" >
+
+示例：
+`
+<template>
+  <div>
+    <edit-time :datelist='datelist' :options='options'></edit-time>
+  </div>
+</template>
+
+<script>
+import editTime from '../components/edit_time'
+
+let datelist = [
+  {
+    year: undefined, // 日期初始年, 默认当前年
+    month: undefined, // 日期初始月, 默认当前月
+    multiSelect: true, // 日期是否可多选
+    switch: false // 当前日期框是否支持切换年月份
+  }
+]
+
+let options = {
+  disable: [], // 不可选日期，格式: '2016-01-01'
+  // enable: [], // 可选日期，格式: '2016-01-01'，enable和disable只能有一个，如果都有默认用enable
+  selected: [], // 已选择的day，格式: '2016-01-01'
+  callback: undefined // 点击日期回调函数, callback(selectDateList)
+}
+
+export default {
+  name: 'test',
+  data () {
+    return {
+      datelist: datelist,
+      options: options
+    }
+  },
+  components: {
+    editTime
+  }
+}
+
+</script>
+`
