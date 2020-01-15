@@ -190,6 +190,7 @@ let DEFAULT_OPTIONS = {
 }
 
 export default {
+  name: 'editTime',
   props: {
     datelist: {
       type: Array,
