@@ -56,7 +56,7 @@ v1.4:
 <img src = "https://github.com/Stephen1993/vue-datetime/blob/master/img/8lnm5-3tu3f.gif" display = "flex" width = "300px" height = "300px" >
 
 示例：
-`
+```
 <template>
   <div>
     <edit-time :datelist='datelist' :options='options'></edit-time>
@@ -96,4 +96,4 @@ export default {
 }
 
 </script>
-`
+```
